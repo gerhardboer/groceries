@@ -8,6 +8,11 @@
       "schematics": {
         "@schematics/angular:application": {
           "strict": true
+        },
+        "@schematics/angular:component": {
+          "style": "scss",
+          "inlineTemplate": true,
+          "inlineStyle": true
         }
       },
       "root": "",
@@ -27,9 +32,9 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/@clr/ui/clr-ui.min.css",
-              "src/styles.css"
+              "src/styles.scss"
             ],
+            "inlineStyleLanguage": "scss",
             "scripts": []
           },
           "configurations": {
@@ -95,7 +100,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss"
             ],
             "scripts": []
           }
