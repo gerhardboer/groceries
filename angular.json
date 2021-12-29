@@ -99,6 +99,16 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "groceries:build:production",
+            "firebaseProject": "groceries-3e2b5",
+            "firebaseHostingSite": "groceries-3e2b5"
+          }
         }
       }
     }

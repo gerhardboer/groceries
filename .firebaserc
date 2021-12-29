@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "groceries-3e2b5"
+  },
+  "targets": {
+    "groceries-3e2b5": {
+      "hosting": {
+        "groceries": [
+          "groceries-3e2b5"
+        ]
+      }
+    }
   }
 }
