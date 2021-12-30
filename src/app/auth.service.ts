@@ -1,15 +1,8 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  Auth,
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-} from '@angular/fire/auth';
+import { Auth, signInWithPopup, signOut } from '@angular/fire/auth';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { GoogleAuthProvider } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -29,61 +22,12 @@ export class AuthService {
     this.afAuth.onAuthStateChanged((user) => {
       if (user) {
         localStorage.setItem('user', JSON.stringify(user));
-        JSON.parse(localStorage.getItem('user') as string);
         this.loggedInSubject.next(true);
       } else {
         localStorage.setItem('user', '');
-        JSON.parse(localStorage.getItem('user') as string);
         this.loggedInSubject.next(false);
       }
     });
-  }
-
-  // Sign in with email/password
-  SignIn(email, password) {
-    return signInWithEmailAndPassword(this.afAuth, email, password)
-      .then((result) => {
-        this.loggedInSubject.next(true);
-        this.ngZone.run(() => {
-          this.router.navigate(['dashboard']);
-        });
-      })
-      .catch((error) => {
-        window.alert(error.message);
-      });
-  }
-
-  // Sign up with email/password
-  SignUp(email, password) {
-    return createUserWithEmailAndPassword(this.afAuth, email, password)
-      .then((result) => {
-        /* Call the SendVerificaitonMail() function when new user sign
-        up and returns promise */
-        this.SendVerificationMail();
-      })
-      .catch((error) => {
-        window.alert(error.message);
-      });
-  }
-
-  // Send email verfificaiton when new user sign up
-  SendVerificationMail() {
-    return this.afAuth.currentUser
-      ? sendEmailVerification(this.afAuth.currentUser).then(() => {
-          this.router.navigate(['verify-email-address']);
-        })
-      : Promise.resolve();
-  }
-
-  // Reset Forggot password
-  ForgotPassword(passwordResetEmail) {
-    return sendPasswordResetEmail(this.afAuth, passwordResetEmail)
-      .then(() => {
-        window.alert('Password reset email sent, check your inbox.');
-      })
-      .catch((error) => {
-        window.alert(error);
-      });
   }
 
   // Returns true when user is looged in and email is verified
@@ -92,10 +36,17 @@ export class AuthService {
     return user !== null && user.emailVerified !== false ? true : false;
   }
 
+  loginWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    this.AuthLogin(provider);
+  }
+
   // Auth logic to run auth providers
   AuthLogin(provider) {
     return signInWithPopup(this.afAuth, provider)
       .then((result) => {
+        localStorage.setItem('user', JSON.stringify(result.user));
+        this.loggedInSubject.next(true);
         this.ngZone.run(() => {
           this.router.navigate(['dashboard']);
         });
